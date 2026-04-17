@@ -6,7 +6,7 @@ extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 uint8_t tx_data[8];
 uint8_t rx_data[8];
-int j=0;
+int je=0;
 
 volatile uint32_t can_rx_count = 0;
 volatile uint8_t can_rx_fresh = 0;
@@ -20,35 +20,35 @@ uint8_t Temperature=0;
 void CAN_Send(CAN_HandleTypeDef *hcan, int16_t *voltage,uint32_t StdId) 
 {
     CAN_TxHeaderTypeDef tx_header;
-    uint8_t tx_data[8] = {0};  // ÇåÁãËùÓĞÊı¾İ×Ö½Ú
-    uint32_t send_mailbox;     // ·¢ËÍÓÊÏäºÅ£¨ÓÉHAL_CAN_AddTxMessageÌî³ä£©
+    uint8_t tx_data[8] = {0};  // æ¸…é›¶æ‰€æœ‰æ•°æ®å­—èŠ‚
+    uint32_t send_mailbox;     // å‘é€é‚®ç®±å·ï¼ˆç”±HAL_CAN_AddTxMessageå¡«å……ï¼‰
 
-    // ÅäÖÃCANÖ¡Í·£¨¿ØÖÆID 1~4£¬±êÊ¶·û0x1FF£©
-    tx_header.StdId = StdId;       // ±ê×¼±êÊ¶·û
-    tx_header.IDE = CAN_ID_STD;    // ±ê×¼Ö¡
-    tx_header.RTR = CAN_RTR_DATA;  // Êı¾İÖ¡
-    tx_header.DLC = 8;             // Êı¾İ³¤¶È8×Ö½Ú
+    // é…ç½®CANå¸§å¤´ï¼ˆæ§åˆ¶ID 1~4ï¼Œæ ‡è¯†ç¬¦0x1FFï¼‰
+    tx_header.StdId = StdId;       // æ ‡å‡†æ ‡è¯†ç¬¦
+    tx_header.IDE = CAN_ID_STD;    // æ ‡å‡†å¸§
+    tx_header.RTR = CAN_RTR_DATA;  // æ•°æ®å¸§
+    tx_header.DLC = 8;             // æ•°æ®é•¿åº¦8å­—èŠ‚
     tx_header.TransmitGlobalTime = DISABLE;
 
-    // Ìî³äÊı¾İ£¨ID=1µÄµçÑ¹Öµ£¬·¶Î§-25000~25000£©
-		// Ìî³äÊı¾İ£¨ID=1µÄµçÑ¹Öµ£¬·¶Î§-16384~16384)
-    tx_data[0] = (voltage[0] >> 8) & 0xFF;  // ¸ß8Î»
-    tx_data[1] = voltage[0] & 0xFF;         // µÍ8Î»
-    tx_data[2] = (voltage[1] >> 8) & 0xFF;  // ¸ß8Î»
-    tx_data[3] = voltage[1] & 0xFF;         // µÍ8Î»
-    tx_data[4] = (voltage[2] >> 8) & 0xFF;  // ¸ß8Î»
-    tx_data[5] = voltage[2] & 0xFF;         // µÍ8Î»
+    // å¡«å……æ•°æ®ï¼ˆID=1çš„ç”µå‹å€¼ï¼ŒèŒƒå›´-25000~25000ï¼‰
+		// å¡«å……æ•°æ®ï¼ˆID=1çš„ç”µå‹å€¼ï¼ŒèŒƒå›´-16384~16384)
+    tx_data[0] = (voltage[0] >> 8) & 0xFF;  // é«˜8ä½
+    tx_data[1] = voltage[0] & 0xFF;         // ä½8ä½
+    tx_data[2] = (voltage[1] >> 8) & 0xFF;  // é«˜8ä½
+    tx_data[3] = voltage[1] & 0xFF;         // ä½8ä½
+    tx_data[4] = (voltage[2] >> 8) & 0xFF;  // é«˜8ä½
+    tx_data[5] = voltage[2] & 0xFF;         // ä½8ä½
 		
-	tx_data[6] = (voltage[3] >> 8) & 0xFF;  // ¸ß8Î»
-    tx_data[7] = voltage[3] & 0xFF;         // µÍ8Î»
+	tx_data[6] = (voltage[3] >> 8) & 0xFF;  // é«˜8ä½
+    tx_data[7] = voltage[3] & 0xFF;         // ä½8ä½
 	
-    // DATA[2-7] ±£ÁôÎª0£¨ÆäËûIDÎ´Ê¹ÓÃ£©
+    // DATA[2-7] ä¿ç•™ä¸º0ï¼ˆå…¶ä»–IDæœªä½¿ç”¨ï¼‰
 
-    // ·¢ËÍCANÖ¡£¨Ê¹ÓÃhcan1£©
+    // å‘é€CANå¸§ï¼ˆä½¿ç”¨hcan1ï¼‰
     HAL_StatusTypeDef status = HAL_CAN_AddTxMessage(hcan, &tx_header, tx_data, &send_mailbox);
 }
 
-// ²¹³äÖĞ¶Ï»Øµ÷º¯Êı£¬½ÓÊÕCANÏûÏ¢²¢´æ´¢µ½È«¾Ö±äÁ¿ÖĞ
+// è¡¥å……ä¸­æ–­å›è°ƒå‡½æ•°ï¼Œæ¥æ”¶CANæ¶ˆæ¯å¹¶å­˜å‚¨åˆ°å…¨å±€å˜é‡ä¸­
 static void CAN_RxFifo0_CopyFrame(CAN_HandleTypeDef *hcan)
 {
     uint8_t rx_buf[8] = {0};
@@ -65,7 +65,7 @@ static void CAN_RxFifo0_CopyFrame(CAN_HandleTypeDef *hcan)
 
     can_rx_fresh = 1;
     can_rx_count++;
-    j++;
+    je++;
 }
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)

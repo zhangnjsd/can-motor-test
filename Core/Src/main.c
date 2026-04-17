@@ -18,12 +18,15 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "bsp_dwt.h"
 #include "bsp_dt7.h"
 #include "bsp_can.h"
+#include "stm32f4xx_hal.h"
+#include "stdbool.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,8 +50,30 @@ CAN_HandleTypeDef hcan2;
 
 UART_HandleTypeDef huart1;
 
+/* Definitions for defaultTask */
+osThreadId_t defaultTaskHandle;
+const osThreadAttr_t defaultTask_attributes = {
+  .name = "defaultTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for gimbleTaskFun */
+osThreadId_t gimbleTaskFunHandle;
+const osThreadAttr_t gimbleTaskFun_attributes = {
+  .name = "gimbleTaskFun",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
+/* Definitions for classicTaskFun */
+osThreadId_t classicTaskFunHandle;
+const osThreadAttr_t classicTaskFun_attributes = {
+  .name = "classicTaskFun",
+  .stack_size = 256 * 4,
+  .priority = (osPriority_t) osPriorityLow,
+};
 /* USER CODE BEGIN PV */
-
+int i;
+int j;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -57,6 +82,10 @@ static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_CAN2_Init(void);
 static void MX_USART1_UART_Init(void);
+void StartDefaultTask(void *argument);
+void gimble_task_fun(void *argument);
+void classic_task_fun(void *argument);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -101,7 +130,51 @@ int main(void)
   /* USER CODE BEGIN 2 */
   DWT_Init(168);
   can_filter_init();
+  int16_t voltage[2] = {0, 0};
+  bool flag = false;
   /* USER CODE END 2 */
+
+  /* Init scheduler */
+  osKernelInitialize();
+
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* creation of defaultTask */
+  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+
+  /* creation of gimbleTaskFun */
+  gimbleTaskFunHandle = osThreadNew(gimble_task_fun, NULL, &gimbleTaskFun_attributes);
+
+  /* creation of classicTaskFun */
+  classicTaskFunHandle = osThreadNew(classic_task_fun, NULL, &classicTaskFun_attributes);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* USER CODE BEGIN RTOS_EVENTS */
+  /* add events, ... */
+  /* USER CODE END RTOS_EVENTS */
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
@@ -292,6 +365,54 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_StartDefaultTask */
+/**
+  * @brief  Function implementing the defaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartDefaultTask */
+void StartDefaultTask(void *argument)
+{
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_gimble_task_fun */
+/**
+* @brief Function implementing the gimbleTaskFun thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_gimble_task_fun */
+void gimble_task_fun(void *argument)
+{
+  /* USER CODE BEGIN gimble_task_fun */
+  /* Infinite loop */
+  gimble_task(argument);
+  /* USER CODE END gimble_task_fun */
+}
+
+/* USER CODE BEGIN Header_classic_task_fun */
+/**
+* @brief Function implementing the classicTaskFun thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_classic_task_fun */
+void classic_task_fun(void *argument)
+{
+  /* USER CODE BEGIN classic_task_fun */
+  /* Infinite loop */
+  classic_task(argument);
+  /* USER CODE END classic_task_fun */
+}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

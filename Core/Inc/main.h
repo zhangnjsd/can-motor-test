@@ -41,7 +41,8 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern int i;
+extern int j;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -53,7 +54,8 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void gimble_task(void *argument);
+void classic_task(void *argument);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
