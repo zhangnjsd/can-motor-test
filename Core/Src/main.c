@@ -65,14 +65,14 @@ const osThreadAttr_t defaultTask_attributes = {
 osThreadId_t gimbleTaskFunHandle;
 const osThreadAttr_t gimbleTaskFun_attributes = {
   .name = "gimbleTaskFun",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for recvTaskFun */
 osThreadId_t recvTaskFunHandle;
 const osThreadAttr_t recvTaskFun_attributes = {
   .name = "recvTaskFun",
-  .stack_size = 256 * 4,
+  .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */

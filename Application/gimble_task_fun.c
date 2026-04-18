@@ -8,7 +8,7 @@ void gimble_task_fun(void *argument) {
     can_filter_init();
     // VULT_DEF: -25000 ~ 25000
     // Only 1 motor, set volt[0] as variable, others are 0
-    PID_t pid_angle, pid_speed;
+    PID_t pid_angle = {0}, pid_speed = {0};
     int16_t volt[4] = {0};
     float target_angle_ecd = 0.0f;
     uint8_t target_locked = 0;
@@ -49,6 +49,8 @@ void gimble_task_fun(void *argument) {
         20,                             // ols_order: 位置信号相对稳定，采样数可多点
         1
     );
+
+    uint32_t next_wake_tick = osKernelGetTickCount();
     for (;;) {
         // 内环使用速度环，外环使用角度环
         // 速度环使用 PI/PID 控制，速度环误差不可过大
@@ -60,7 +62,6 @@ void gimble_task_fun(void *argument) {
         }
 
         target_angle_dbg = target_angle_ecd;
-
         if (target_locked) {
             float speed_measure = (float)((int16_t)current_speed);
             float speed_ref = TARGET_SPEED_RPM;
@@ -78,6 +79,7 @@ void gimble_task_fun(void *argument) {
         volt[3] = 0;
         CAN_Send(&hcan1, volt, CAN_ID);
 
-        osDelay(10);
+        next_wake_tick += 1;
+        osDelayUntil(next_wake_tick);
     }
 }
