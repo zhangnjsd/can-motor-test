@@ -48,7 +48,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_can.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dwt.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/gimble_task_fun.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application/classic_task_fun.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/recv_task_fun.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/PID/controller.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/PID/user_lib.c
 )
 
 # Add include paths
@@ -56,12 +58,14 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/Inc
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/PID
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares
 )
 
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
+    ARM_MATH_CM4
 )
 
 # Remove wrong libob.a library dependency when using cpp files

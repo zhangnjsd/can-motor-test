@@ -29,6 +29,7 @@
 #include "stm32f4xx_hal.h"
 #include "stdbool.h"
 #include <stdint.h>
+#include <stdio.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +52,7 @@ CAN_HandleTypeDef hcan1;
 CAN_HandleTypeDef hcan2;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart6;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -66,18 +68,21 @@ const osThreadAttr_t gimbleTaskFun_attributes = {
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for classicTaskFun */
-osThreadId_t classicTaskFunHandle;
-const osThreadAttr_t classicTaskFun_attributes = {
-  .name = "classicTaskFun",
+/* Definitions for recvTaskFun */
+osThreadId_t recvTaskFunHandle;
+const osThreadAttr_t recvTaskFun_attributes = {
+  .name = "recvTaskFun",
   .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
-int i;
-int j;
-
+// RX_DATA { MECH_ANGLE_H, MECH_ANGLE_L, SPD_H, SPD_L, TORQUE_H, TORQUE_L, TEMP, FLAG }
 uint8_t rx_data[8];
+uint16_t current_speed = 0;
+uint16_t current_angle = 0;
+uint16_t current_torque = 0;
+float target_angle_dbg = 0.0f;
+float target_speed_dbg = 0.0f;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -86,9 +91,10 @@ static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_CAN2_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_USART6_UART_Init(void);
 void StartDefaultTask(void *argument);
 void gimble_task_fun(void *argument);
-void classic_task_fun(void *argument);
+void recv_task_fun(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -131,11 +137,10 @@ int main(void)
   MX_CAN1_Init();
   MX_CAN2_Init();
   MX_USART1_UART_Init();
+  MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(168);
   can_filter_init();
-  int16_t voltage[2] = {0, 0};
-  bool flag = false;
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -164,8 +169,8 @@ int main(void)
   /* creation of gimbleTaskFun */
   gimbleTaskFunHandle = osThreadNew(gimble_task_fun, NULL, &gimbleTaskFun_attributes);
 
-  /* creation of classicTaskFun */
-  classicTaskFunHandle = osThreadNew(classic_task_fun, NULL, &classicTaskFun_attributes);
+  /* creation of recvTaskFun */
+  recvTaskFunHandle = osThreadNew(recv_task_fun, NULL, &recvTaskFun_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -345,6 +350,39 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
+  * @brief USART6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART6_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART6_Init 0 */
+
+  /* USER CODE END USART6_Init 0 */
+
+  /* USER CODE BEGIN USART6_Init 1 */
+
+  /* USER CODE END USART6_Init 1 */
+  huart6.Instance = USART6;
+  huart6.Init.BaudRate = 115200;
+  huart6.Init.WordLength = UART_WORDLENGTH_8B;
+  huart6.Init.StopBits = UART_STOPBITS_1;
+  huart6.Init.Parity = UART_PARITY_NONE;
+  huart6.Init.Mode = UART_MODE_TX_RX;
+  huart6.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart6.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART6_Init 2 */
+
+  /* USER CODE END USART6_Init 2 */
+
+}
+
+/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -357,6 +395,7 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
@@ -405,21 +444,22 @@ __weak void gimble_task_fun(void *argument)
   /* USER CODE END gimble_task_fun */
 }
 
-/* USER CODE BEGIN Header_classic_task_fun */
+/* USER CODE BEGIN Header_recv_task_fun */
 /**
-* @brief Function implementing the classicTaskFun thread.
+* @brief Function implementing the recvTaskFun thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_classic_task_fun */
-__weak void classic_task_fun(void *argument)
+/* USER CODE END Header_recv_task_fun */
+__weak void recv_task_fun(void *argument)
 {
-  /* USER CODE BEGIN classic_task_fun */
+  /* USER CODE BEGIN recv_task_fun */
   /* Infinite loop */
-  for (;;) {
+  for(;;)
+  {
     osDelay(1);
   }
-  /* USER CODE END classic_task_fun */
+  /* USER CODE END recv_task_fun */
 }
 
 /**

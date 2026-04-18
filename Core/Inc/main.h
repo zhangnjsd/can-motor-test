@@ -43,9 +43,14 @@ extern "C" {
 /* USER CODE BEGIN EC */
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
-extern int i;
-extern int j;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart6;
 extern uint8_t rx_data[8];
+extern uint16_t current_speed;
+extern uint16_t current_angle;
+extern uint16_t current_torque;
+extern float target_angle_dbg;
+extern float target_speed_dbg;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
