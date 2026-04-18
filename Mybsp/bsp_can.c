@@ -2,10 +2,6 @@
 #include "main.h"
 
 
-extern CAN_HandleTypeDef hcan1;
-extern CAN_HandleTypeDef hcan2;
-uint8_t tx_data[8];
-uint8_t rx_data[8];
 int je=0;
 
 volatile uint32_t can_rx_count = 0;

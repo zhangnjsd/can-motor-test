@@ -41,8 +41,11 @@ extern "C" {
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
+extern CAN_HandleTypeDef hcan1;
+extern CAN_HandleTypeDef hcan2;
 extern int i;
 extern int j;
+extern uint8_t rx_data[8];
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
@@ -54,8 +57,6 @@ extern int j;
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void gimble_task(void *argument);
-void classic_task(void *argument);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/

@@ -25,8 +25,10 @@
 #include "bsp_dwt.h"
 #include "bsp_dt7.h"
 #include "bsp_can.h"
+#include "cmsis_os2.h"
 #include "stm32f4xx_hal.h"
 #include "stdbool.h"
+#include <stdint.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -74,6 +76,8 @@ const osThreadAttr_t classicTaskFun_attributes = {
 /* USER CODE BEGIN PV */
 int i;
 int j;
+
+uint8_t rx_data[8];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -391,11 +395,13 @@ void StartDefaultTask(void *argument)
 * @retval None
 */
 /* USER CODE END Header_gimble_task_fun */
-void gimble_task_fun(void *argument)
+__weak void gimble_task_fun(void *argument)
 {
   /* USER CODE BEGIN gimble_task_fun */
   /* Infinite loop */
-  gimble_task(argument);
+  for (;;) {
+    osDelay(1);
+  }
   /* USER CODE END gimble_task_fun */
 }
 
@@ -406,11 +412,13 @@ void gimble_task_fun(void *argument)
 * @retval None
 */
 /* USER CODE END Header_classic_task_fun */
-void classic_task_fun(void *argument)
+__weak void classic_task_fun(void *argument)
 {
   /* USER CODE BEGIN classic_task_fun */
   /* Infinite loop */
-  classic_task(argument);
+  for (;;) {
+    osDelay(1);
+  }
   /* USER CODE END classic_task_fun */
 }
 
