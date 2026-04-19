@@ -9,7 +9,7 @@ void gimble_task_fun(void *argument) {
         &pid_speed, 
         25000.0f,
         8000.0f,
-        8.0f,
+        1.2f,
 
         30.0f,
         1.2f,

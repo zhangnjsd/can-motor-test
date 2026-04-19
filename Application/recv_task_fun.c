@@ -1,4 +1,5 @@
 #include "recv_task_fun.h"
+#include <math.h>
 
 // Rewrite fputc to use UART for printf
 int __io_putchar(int ch) {
@@ -30,9 +31,9 @@ void recv_task_fun(void *argument) {
         // ? Output Freq = 100Hz
         if (++print_div >= 10) {
             print_div = 0;
-            printf("stream:%d,%f\n",
-                (int16_t)current_angle,
-                target_angle_dbg);
+            // Bias.
+            printf("stream:%f,0\n",
+                (float_t)current_angle - (float_t)target_angle_dbg);
         }
 
         

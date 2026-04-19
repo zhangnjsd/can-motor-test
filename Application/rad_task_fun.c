@@ -15,7 +15,7 @@ void rad_task_fun(void *argument) {
         &pid_angle, 
         150.0f,
         0.0f,
-        8.0f,
+        1.2f,
 
         0.4f,
         0.0f,
@@ -26,7 +26,7 @@ void rad_task_fun(void *argument) {
 
         0.12f,
         0.12f,
-        2,
+        0,
         OutputFilter | DerivativeFilter
     );
 
