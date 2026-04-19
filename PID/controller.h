@@ -78,14 +78,14 @@ void Fuzzy_Rule_Implementation(FuzzyRule_t *fuzzyRule, float measure, float ref)
 /******************************* PID CONTROL *********************************/
 typedef enum pid_Improvement_e
 {
-    NONE = 0X00,                        //0000 0000 	ÎŞÓÅ»¯
-    Integral_Limit = 0x01,              //0000 0001	»ı·ÖÏŞ·ù
-    Derivative_On_Measurement = 0x02,   //0000 0010	Î¢·ÖÏÈĞĞ
-    Trapezoid_Intergral = 0x04,         //0000 0100	ÌİĞÎ»ı·Ö
+    NONE = 0X00,                        //0000 0000 	æ— ä¼˜åŒ–
+    Integral_Limit = 0x01,              //0000 0001	ç§¯åˆ†é™å¹…
+    Derivative_On_Measurement = 0x02,   //0000 0010	å¾®åˆ†å…ˆè¡Œ
+    Trapezoid_Intergral = 0x04,         //0000 0100	æ¢¯å½¢ç§¯åˆ†
     Proportional_On_Measurement = 0x08, //0000 1000
-    OutputFilter = 0x10,                //0001 0000	Êä³öÂË²¨
-    ChangingIntegrationRate = 0x20,     //0010 0000	±äËÙ»ı·Ö
-    DerivativeFilter = 0x40,            //0100 0000	Î¢·ÖÂË²¨
+    OutputFilter = 0x10,                //0001 0000	è¾“å‡ºæ»¤æ³¢
+    ChangingIntegrationRate = 0x20,     //0010 0000	å˜é€Ÿç§¯åˆ†
+    DerivativeFilter = 0x40,            //0100 0000	å¾®åˆ†æ»¤æ³¢
     ErrorHandle = 0x80,                 //1000 0000
 } PID_Improvement_e;
 

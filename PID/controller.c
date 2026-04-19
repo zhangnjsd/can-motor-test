@@ -132,13 +132,24 @@ static void f_PID_ErrorHandle(PID_t *pid);
 
 /**
  * @brief          PID初始化   PID initialize
- * @param[in]      PID结构体   PID structure
- * @param[in]      略
+ * @param[in]      pid: PID结构体指针，指向需要初始化的PID结构体
+ * @param[in]      max_out: 输出限幅，防止控制量过大
+ * @param[in]      intergral_limit: 积分限幅，防止积分过大
+ * @param[in]      deadband: 死区，误差小于该值时不进行控制
+ * @param[in]      kp: 比例参数
+ * @param[in]      ki: 积分参数
+ * @param[in]      kd: 微分参数
+ * @param[in]      A: 变速积分参数，误差在A以内全积分，A->A+B之间按比例减少积分，误差大于A+B不积分
+ * @param[in]      B: 变速积分参数，误差在A以内全积分，A->A+B之间按比例减少积分，误差大于A+B不积分
+ * @param[in]      output_lpf_rc: 输出滤波参数，单位秒，数值越大滤波越明显，0表示不滤波
+ * @param[in]      derivative_lpf_rc: 微分滤波参数，单位秒，数值越大滤波越明显，0表示不滤波
+ * @param[in]      ols_order: 最小二乘法提取微分的阶数，必须大于2，数值越大提取的微分越平滑，但控制响应也越慢
+ * @param[in]      improve: PID优化环节选择，使用位域表示，1表示使用，0表示不使用
  * @retval         返回空      null
  */
 void PID_Improve_Init(
     PID_t *pid,
-    float max_out,			//输出极限
+    float max_out,			    //输出极限
     float intergral_limit,		//积分极限 2000
     float deadband,  			// 误差大于死区值  死亡
 
@@ -146,17 +157,17 @@ void PID_Improve_Init(
     float Ki,
     float Kd,
 	    
-// 变速积分参数
-    float A,		// B  A+B 三个区间
-    float B,  		//
+    // 变速积分参数
+    float A,		            // B  A+B 三个区间
+    float B,  		            //
 
-    float output_lpf_rc,	//输出的低通滤波参数  0
+    float output_lpf_rc,	    //输出的低通滤波参数  0
     float derivative_lpf_rc,	//微分的低通滤波  0
 	    
 	// 最小二乘提取信号微分初始化
-    uint16_t ols_order,    //最小二乘法样本数 10或20
+    uint16_t ols_order,         //最小二乘法样本数 10或20
 	// 设置PID优化环节
-    uint8_t improve)       //1 或者 0
+    uint8_t improve)            //1 或者 0
 {
     pid->DeadBand = deadband;
     pid->IntegralLimit = intergral_limit;

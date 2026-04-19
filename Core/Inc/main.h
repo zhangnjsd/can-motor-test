@@ -51,6 +51,8 @@ extern uint16_t current_angle;
 extern uint16_t current_torque;
 extern float target_angle_dbg;
 extern float target_speed_dbg;
+extern float target_angle_speed_ref;
+extern int16_t volt[4];
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

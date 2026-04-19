@@ -11,6 +11,8 @@ int fputc(int ch, FILE *f) {
 }
 
 void recv_task_fun(void *argument) {
+    can_filter_init();
+    // * Print divider for reducing print frequency
     uint32_t print_div = 0;
     uint32_t next_wake_tick = osKernelGetTickCount();
 
@@ -18,16 +20,24 @@ void recv_task_fun(void *argument) {
         current_angle = ((uint16_t)rx_data[0] << 8) | rx_data[1];
         current_speed = ((uint16_t)rx_data[2] << 8) | rx_data[3];
         current_torque = ((uint16_t)rx_data[4] << 8) | rx_data[5];
+        
+        // Set and send controller.
+        volt[1] = 0;
+        volt[2] = 0;
+        volt[3] = 0;
+        CAN_Send(&hcan1, volt, CAN_ID);
 
+        // ? Output Freq = 100Hz
         if (++print_div >= 10) {
             print_div = 0;
-            printf("n:%d,%f\n",
-                (int16_t)current_speed,
-                target_speed_dbg);
+            printf("stream:%d,%f\n",
+                (int16_t)current_angle,
+                target_angle_dbg);
         }
 
+        
+        // ? Req&Set Freq = 1000Hz
         next_wake_tick += 1;
         osDelayUntil(next_wake_tick);
-        
     }
 }

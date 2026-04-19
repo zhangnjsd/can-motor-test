@@ -75,6 +75,13 @@ const osThreadAttr_t recvTaskFun_attributes = {
   .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for radTaskFun */
+osThreadId_t radTaskFunHandle;
+const osThreadAttr_t radTaskFun_attributes = {
+  .name = "radTaskFun",
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 /* USER CODE BEGIN PV */
 // RX_DATA { MECH_ANGLE_H, MECH_ANGLE_L, SPD_H, SPD_L, TORQUE_H, TORQUE_L, TEMP, FLAG }
 uint8_t rx_data[8];
@@ -83,6 +90,8 @@ uint16_t current_angle = 0;
 uint16_t current_torque = 0;
 float target_angle_dbg = 0.0f;
 float target_speed_dbg = 0.0f;
+float target_angle_speed_ref = 0.0f;
+int16_t volt[4] = {0};
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -95,6 +104,7 @@ static void MX_USART6_UART_Init(void);
 void StartDefaultTask(void *argument);
 void gimble_task_fun(void *argument);
 void recv_task_fun(void *argument);
+void rad_task_fun(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -171,6 +181,9 @@ int main(void)
 
   /* creation of recvTaskFun */
   recvTaskFunHandle = osThreadNew(recv_task_fun, NULL, &recvTaskFun_attributes);
+
+  /* creation of radTaskFun */
+  radTaskFunHandle = osThreadNew(rad_task_fun, NULL, &radTaskFun_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -460,6 +473,24 @@ __weak void recv_task_fun(void *argument)
     osDelay(1);
   }
   /* USER CODE END recv_task_fun */
+}
+
+/* USER CODE BEGIN Header_rad_task_fun */
+/**
+* @brief Function implementing the radTaskFun thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_rad_task_fun */
+__weak void rad_task_fun(void *argument)
+{
+  /* USER CODE BEGIN rad_task_fun */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END rad_task_fun */
 }
 
 /**

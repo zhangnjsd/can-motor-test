@@ -51,6 +51,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/recv_task_fun.c
     ${CMAKE_CURRENT_SOURCE_DIR}/PID/controller.c
     ${CMAKE_CURRENT_SOURCE_DIR}/PID/user_lib.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/rad_task_fun.c
 )
 
 # Add include paths
