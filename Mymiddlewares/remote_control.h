@@ -55,14 +55,14 @@
 #define KEY_PRESSED_OFFSET_V            ((uint16_t)1 << 14)
 #define KEY_PRESSED_OFFSET_B            ((uint16_t)1 << 15)
 /* ----------------------- Data Struct ------------------------------------- */
-typedef __packed struct
+typedef struct __attribute__((packed))
 {
-        __packed struct
+        struct __attribute__((packed))
         {
                 int16_t ch[5];
                 char s[2];
         } rc;
-        __packed struct
+        struct __attribute__((packed))
         {
                 int16_t x;//鼠标X轴位移值
                 int16_t y;//鼠标y轴位移值
@@ -70,7 +70,7 @@ typedef __packed struct
                 uint8_t press_l;//左键开火
                 uint8_t press_r;//右键自瞄
         } mouse;
-        __packed struct
+        struct __attribute__((packed))
         {
                 uint16_t v;
         } key;

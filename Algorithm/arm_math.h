@@ -288,6 +288,11 @@
 #ifndef _ARM_MATH_H
 #define _ARM_MATH_H
 
+/* Define ARM_MATH_CM4 if not already defined for STM32F407 */
+#ifndef ARM_MATH_CM4
+#define ARM_MATH_CM4
+#endif
+
 #define __CMSIS_GENERIC         /* disable NVIC and Systick functions */
 
 #if defined(ARM_MATH_CM7)

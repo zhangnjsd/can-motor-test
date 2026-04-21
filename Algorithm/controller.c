@@ -13,12 +13,14 @@
  */
 #include "controller.h"
 
+#ifndef __INS_TASK_H
 typedef struct
 {
     float Gyro[3];
 } controller_ins_proxy_t;
 
 __attribute__((weak)) controller_ins_proxy_t INS;
+#endif
 
 /******************************** FUZZY PID **********************************/
 static float FuzzyRuleKpRAW[7][7] = {

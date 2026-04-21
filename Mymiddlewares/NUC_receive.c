@@ -1,7 +1,7 @@
 #include "NUC_receive.h"
 #include "ins_task.h"
 #include "crc.h"
-#include "usbd_cdc_if.h"
+// #include "usbd_cdc_if.h"  // Missing file - commenting out
 #include <stdbool.h>
 #include "solvetrajectory.h"
 #include "kalman_filter_task.h"

@@ -68,6 +68,7 @@ typedef struct
 } IMU_Param_t;
 
 extern INS_t INS;
+extern TIM_HandleTypeDef htim10;
 
 void INS_Init(void);
 void INS_Task(void);

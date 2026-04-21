@@ -31,7 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "bsp_dwt.h"
+#include "bsp_dt7.h"
+#include "bsp_can.h"
+#include "BMI088driver.h"
+#include "ins_task.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

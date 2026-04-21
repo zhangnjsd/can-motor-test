@@ -45,14 +45,31 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 file(GLOB_RECURSE MYBSP_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/*.c
 )
+# Exclude bsp_dt7.c due to missing huart3 definition
+list(REMOVE_ITEM MYBSP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dt7.c")
+
 file(GLOB_RECURSE MYMIDDLEWARE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/*.c
+)
+# Exclude middleware sources with missing dependencies
+list(REMOVE_ITEM MYMIDDLEWARE_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/NUC_receive.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/kalman_filter_task.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/remote_control.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/CAN_receive.c"
 )
 file(GLOB_RECURSE ALGORITHM_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm/*.c
 )
+list(REMOVE_ITEM ALGORITHM_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/Algorithm/SolveTrajectory.c"
+)
+
 file(GLOB_RECURSE RTOS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/*.c
+)
+list(REMOVE_ITEM RTOS_SOURCES 
+    # Re-enable INS_task_fun.c for IMU support
 )
 
 # Add sources to executable
@@ -67,7 +84,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddleware
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares
     ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm
     ${CMAKE_CURRENT_SOURCE_DIR}/Mydrive/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/Inc

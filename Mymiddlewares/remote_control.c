@@ -19,7 +19,10 @@
   */
 
 #include "remote_control.h"
-#include "Check_Online_task_fun.h"
+//#include "Check_Online_task_fun.h"  // Missing file - commenting out
+
+// Stub for missing function
+void Device_Status_Update(int status) { (void)status; }
 #include "main.h"
 
 ////遥控器出错数据上限

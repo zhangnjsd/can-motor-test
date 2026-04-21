@@ -4,8 +4,8 @@
 #include "struct_typedef.h"
 #include "cmsis_os.h"
 #include "main.h"
-#include "dm_driver.h"
-#include "Check_Online_task_fun.h"
+// #include "dm_driver.h"  // Missing file - commenting out
+// #include "Check_Online_task_fun.h"  // Missing file - commenting out
 
 #define CAN_2         hcan2
 #define CAN_1         hcan1

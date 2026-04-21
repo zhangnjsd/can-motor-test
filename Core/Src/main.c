@@ -22,9 +22,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "bsp_dwt.h"
-#include "bsp_dt7.h"
-#include "bsp_can.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -133,7 +130,7 @@ int main(void)
   // ! Initialize the DWT for delay function, and initialize the BMI088 IMU until it is successfully initialized. 
   // ! After that, initialize the INS and CAN filter.
   DWT_Init(168);
-  while (BMI088_init(&hspi1, uint8_t calibrate)) {}
+  while (BMI088_init(&hspi1, 1)) {}  // calibrate = 1
   INS_Init();
   can_filter_init();
   /* USER CODE END 2 */
