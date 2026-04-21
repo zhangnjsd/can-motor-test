@@ -42,18 +42,35 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
 )
 
+file(GLOB_RECURSE MYBSP_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/*.c
+)
+file(GLOB_RECURSE MYMIDDLEWARE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/*.c
+)
+file(GLOB_RECURSE ALGORITHM_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm/*.c
+)
+file(GLOB_RECURSE RTOS_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/*.c
+)
+
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_can.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dwt.c
+    ${MYBSP_SOURCES}
+    ${MYMIDDLEWARE_SOURCES}
+    ${ALGORITHM_SOURCES}
+    ${RTOS_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mydrive/BMI088driver.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/Inc
-
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddleware
+    ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mydrive/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/Inc
 )
 
 # Add project symbols (macros)

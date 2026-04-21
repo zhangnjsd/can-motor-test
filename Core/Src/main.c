@@ -129,7 +129,12 @@ int main(void)
   MX_SPI1_Init();
   MX_TIM10_Init();
   /* USER CODE BEGIN 2 */
+
+  // ! Initialize the DWT for delay function, and initialize the BMI088 IMU until it is successfully initialized. 
+  // ! After that, initialize the INS and CAN filter.
   DWT_Init(168);
+  while (BMI088_init(&hspi1, uint8_t calibrate)) {}
+  INS_Init();
   can_filter_init();
   /* USER CODE END 2 */
 
