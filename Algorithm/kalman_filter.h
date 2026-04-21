@@ -13,17 +13,17 @@
 #ifndef __KALMAN_FILTER_H
 #define __KALMAN_FILTER_H
 
-// cortex-m4 DSP lib
-/*
-#define __CC_ARM    // Keil
 #define ARM_MATH_CM4
 #define ARM_MATH_MATRIX_CHECK
 #define ARM_MATH_ROUNDING
-#define ARM_MATH_DSP    // define in arm_math.h
-*/
+
+#ifndef ARM_MATH_DSP
+#define ARM_MATH_DSP
+#endif
 
 #include "stm32f407xx.h"
 #include "arm_math.h"
+// ! No Matrix Functions
 //#include "dsp/matrix_functions.h"
 #include "math.h"
 #include "stdint.h"
