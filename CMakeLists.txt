@@ -45,8 +45,6 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 file(GLOB_RECURSE MYBSP_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/*.c
 )
-# Exclude bsp_dt7.c due to missing huart3 definition
-list(REMOVE_ITEM MYBSP_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dt7.c")
 
 file(GLOB_RECURSE MYMIDDLEWARE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Mymiddlewares/*.c
@@ -61,15 +59,13 @@ list(REMOVE_ITEM MYMIDDLEWARE_SOURCES
 file(GLOB_RECURSE ALGORITHM_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Algorithm/*.c
 )
-list(REMOVE_ITEM ALGORITHM_SOURCES 
-    "${CMAKE_CURRENT_SOURCE_DIR}/Algorithm/SolveTrajectory.c"
-)
 
 file(GLOB_RECURSE RTOS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/*.c
 )
-list(REMOVE_ITEM RTOS_SOURCES 
-    # Re-enable INS_task_fun.c for IMU support
+
+file(GLOB_RECURSE DRIVE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/Mydrive/*.c
 )
 
 # Add sources to executable
@@ -78,7 +74,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     ${MYMIDDLEWARE_SOURCES}
     ${ALGORITHM_SOURCES}
     ${RTOS_SOURCES}
-    ${CMAKE_CURRENT_SOURCE_DIR}/Mydrive/BMI088driver.c
+    ${DRIVE_SOURCES}
 )
 
 # Add include paths

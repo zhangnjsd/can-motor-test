@@ -45,6 +45,9 @@ extern CAN_HandleTypeDef hcan2;
 extern SPI_HandleTypeDef hspi1;
 extern DMA_HandleTypeDef hdma_spi1_rx;
 extern DMA_HandleTypeDef hdma_spi1_tx;
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart3;
+extern DMA_HandleTypeDef hdma_usart3_rx;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

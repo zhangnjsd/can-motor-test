@@ -1,0 +1,7 @@
+Language: Cpp
+BasedOnStyle: LLVM
+IndentWidth: 4
+AllowShortFunctionsOnASingleLine: None
+SpaceBeforeParens: Always
+AlignAfterOpenBracket: Align
+ColumnLimit: 100

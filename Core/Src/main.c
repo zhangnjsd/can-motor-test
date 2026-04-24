@@ -50,6 +50,8 @@ DMA_HandleTypeDef hdma_spi1_tx;
 TIM_HandleTypeDef htim10;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_usart3_rx;
 
 /* Definitions for defaultTask */
 osThreadId_t defaultTaskHandle;
@@ -58,10 +60,10 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for INS_thread */
-osThreadId_t INS_threadHandle;
-const osThreadAttr_t INS_thread_attributes = {
-  .name = "INS_thread",
+/* Definitions for dt7_thread */
+osThreadId_t dt7_threadHandle;
+const osThreadAttr_t dt7_thread_attributes = {
+  .name = "dt7_thread",
   .stack_size = 256 * 4,
   .priority = (osPriority_t) osPriorityHigh,
 };
@@ -78,8 +80,9 @@ static void MX_CAN2_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM10_Init(void);
+static void MX_USART3_UART_Init(void);
 void StartDefaultTask(void *argument);
-void INS_task_fun(void *argument);
+void dt7_recv_task_fun(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -125,6 +128,7 @@ int main(void)
   MX_USART1_UART_Init();
   MX_SPI1_Init();
   MX_TIM10_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
   // ! Initialize the DWT for delay function, and initialize the BMI088 IMU until it is successfully initialized. 
@@ -158,8 +162,8 @@ int main(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of INS_thread */
-  INS_threadHandle = osThreadNew(INS_task_fun, NULL, &INS_thread_attributes);
+  /* creation of dt7_thread */
+  dt7_threadHandle = osThreadNew(dt7_recv_task_fun, NULL, &dt7_thread_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -423,6 +427,39 @@ static void MX_USART1_UART_Init(void)
 }
 
 /**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 100000;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_EVEN;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -430,8 +467,12 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA2_CLK_ENABLE();
+  __HAL_RCC_DMA1_CLK_ENABLE();
 
   /* DMA interrupt init */
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
@@ -457,9 +498,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS1_ACCEL_GPIO_Port, CS1_ACCEL_Pin, GPIO_PIN_SET);
@@ -514,22 +555,22 @@ void StartDefaultTask(void *argument)
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_INS_task_fun */
+/* USER CODE BEGIN Header_dt7_recv_task_fun */
 /**
-* @brief Function implementing the INS_thread thread.
+* @brief Function implementing the dt7_thread thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_INS_task_fun */
-__weak void INS_task_fun(void *argument)
+/* USER CODE END Header_dt7_recv_task_fun */
+__weak void dt7_recv_task_fun(void *argument)
 {
-  /* USER CODE BEGIN INS_task_fun */
+  /* USER CODE BEGIN dt7_recv_task_fun */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END INS_task_fun */
+  /* USER CODE END dt7_recv_task_fun */
 }
 
 /**
