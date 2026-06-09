@@ -66,7 +66,7 @@ const osThreadAttr_t canSendTaskFun_attributes = {
   .priority = (osPriority_t) osPriorityHigh,
 };
 /* USER CODE BEGIN PV */
-extern uint8_t recv_data1;
+uint8_t recv_data1 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/

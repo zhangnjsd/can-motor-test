@@ -7,6 +7,7 @@ int je=0;
 volatile uint32_t can_rx_count = 0;
 volatile uint8_t can_rx_fresh = 0;
 CAN_RxHeaderTypeDef can_rx_header;
+uint8_t rx_data[8] = {0};
 	
 uint16_t angle_motor=0;
 int16_t speed=0;
@@ -84,11 +85,4 @@ void can_filter_init(void)
     HAL_CAN_ConfigFilter(&hcan1, &can_filter_st);
     HAL_CAN_Start(&hcan1);
     HAL_CAN_ActivateNotification(&hcan1, CAN_IT_RX_FIFO0_MSG_PENDING);
-
-
-    can_filter_st.SlaveStartFilterBank = 14;
-    can_filter_st.FilterBank = 14;
-    HAL_CAN_ConfigFilter(&hcan2, &can_filter_st);
-    HAL_CAN_Start(&hcan2);
-    HAL_CAN_ActivateNotification(&hcan2, CAN_IT_RX_FIFO0_MSG_PENDING);
 }
