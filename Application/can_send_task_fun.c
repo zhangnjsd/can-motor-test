@@ -10,7 +10,7 @@ void can_send_task_fun(void *argument) {
         uint8_t msg[4] = {1, 0, 0, 0};
         uint32_t mailbox;
 
-        tx_header.StdId = CAN_ID;
+        tx_header.StdId = REMOTE_CAN_ID;
         tx_header.IDE = CAN_ID_STD;
         tx_header.RTR = CAN_RTR_DATA;
         tx_header.DLC = 0x08;
@@ -29,7 +29,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
     if (hcan == &hcan1) {
         // Read remote can id
-        if (rx_header.StdId == CAN_ID) {
+        if (rx_header.StdId == REMOTE_CAN_ID) {
             // ? Process received data (if needed)
             recv_data1 = rx_data[0];
         }
