@@ -43,9 +43,7 @@ extern "C" {
 /* USER CODE BEGIN EC */
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
-extern int i;
-extern int j;
-extern uint8_t rx_data[8];
+extern uint8_t recv_data1;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

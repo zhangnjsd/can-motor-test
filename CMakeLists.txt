@@ -47,8 +47,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_can.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dwt.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application/gimble_task_fun.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application/classic_task_fun.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/can_send_task_fun.c
 )
 
 # Add include paths

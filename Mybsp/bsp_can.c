@@ -64,10 +64,7 @@ static void CAN_RxFifo0_CopyFrame(CAN_HandleTypeDef *hcan)
     je++;
 }
 
-void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-    CAN_RxFifo0_CopyFrame(hcan);
-}
+
 
 
 void can_filter_init(void)

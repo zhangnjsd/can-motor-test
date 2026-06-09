@@ -48,7 +48,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
-CAN_HandleTypeDef hcan2;
 
 UART_HandleTypeDef huart1;
 
@@ -59,36 +58,24 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for gimbleTaskFun */
-osThreadId_t gimbleTaskFunHandle;
-const osThreadAttr_t gimbleTaskFun_attributes = {
-  .name = "gimbleTaskFun",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for classicTaskFun */
-osThreadId_t classicTaskFunHandle;
-const osThreadAttr_t classicTaskFun_attributes = {
-  .name = "classicTaskFun",
-  .stack_size = 256 * 4,
-  .priority = (osPriority_t) osPriorityLow,
+/* Definitions for canSendTaskFun */
+osThreadId_t canSendTaskFunHandle;
+const osThreadAttr_t canSendTaskFun_attributes = {
+  .name = "canSendTaskFun",
+  .stack_size = 512 * 4,
+  .priority = (osPriority_t) osPriorityHigh,
 };
 /* USER CODE BEGIN PV */
-int i;
-int j;
-
-uint8_t rx_data[8];
+extern uint8_t recv_data1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
-static void MX_CAN2_Init(void);
 static void MX_USART1_UART_Init(void);
 void StartDefaultTask(void *argument);
-void gimble_task_fun(void *argument);
-void classic_task_fun(void *argument);
+void can_send_task_fun(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -129,13 +116,10 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN1_Init();
-  MX_CAN2_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   DWT_Init(168);
   can_filter_init();
-  int16_t voltage[2] = {0, 0};
-  bool flag = false;
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -161,11 +145,8 @@ int main(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of gimbleTaskFun */
-  gimbleTaskFunHandle = osThreadNew(gimble_task_fun, NULL, &gimbleTaskFun_attributes);
-
-  /* creation of classicTaskFun */
-  classicTaskFunHandle = osThreadNew(classic_task_fun, NULL, &classicTaskFun_attributes);
+  /* creation of canSendTaskFun */
+  canSendTaskFunHandle = osThreadNew(can_send_task_fun, NULL, &canSendTaskFun_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -259,9 +240,9 @@ static void MX_CAN1_Init(void)
   hcan1.Init.TimeSeg1 = CAN_BS1_10TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_3TQ;
   hcan1.Init.TimeTriggeredMode = DISABLE;
-  hcan1.Init.AutoBusOff = DISABLE;
+  hcan1.Init.AutoBusOff = ENABLE;
   hcan1.Init.AutoWakeUp = ENABLE;
-  hcan1.Init.AutoRetransmission = DISABLE;
+  hcan1.Init.AutoRetransmission = ENABLE;
   hcan1.Init.ReceiveFifoLocked = DISABLE;
   hcan1.Init.TransmitFifoPriority = DISABLE;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
@@ -271,43 +252,6 @@ static void MX_CAN1_Init(void)
   /* USER CODE BEGIN CAN1_Init 2 */
 
   /* USER CODE END CAN1_Init 2 */
-
-}
-
-/**
-  * @brief CAN2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_CAN2_Init(void)
-{
-
-  /* USER CODE BEGIN CAN2_Init 0 */
-
-  /* USER CODE END CAN2_Init 0 */
-
-  /* USER CODE BEGIN CAN2_Init 1 */
-
-  /* USER CODE END CAN2_Init 1 */
-  hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 3;
-  hcan2.Init.Mode = CAN_MODE_NORMAL;
-  hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan2.Init.TimeSeg1 = CAN_BS1_10TQ;
-  hcan2.Init.TimeSeg2 = CAN_BS2_3TQ;
-  hcan2.Init.TimeTriggeredMode = DISABLE;
-  hcan2.Init.AutoBusOff = ENABLE;
-  hcan2.Init.AutoWakeUp = ENABLE;
-  hcan2.Init.AutoRetransmission = ENABLE;
-  hcan2.Init.ReceiveFifoLocked = DISABLE;
-  hcan2.Init.TransmitFifoPriority = DISABLE;
-  if (HAL_CAN_Init(&hcan2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN CAN2_Init 2 */
-
-  /* USER CODE END CAN2_Init 2 */
 
 }
 
@@ -356,8 +300,8 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
 
@@ -388,38 +332,22 @@ void StartDefaultTask(void *argument)
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_gimble_task_fun */
+/* USER CODE BEGIN Header_can_send_task_fun */
 /**
-* @brief Function implementing the gimbleTaskFun thread.
+* @brief Function implementing the canSendTaskFun thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_gimble_task_fun */
-__weak void gimble_task_fun(void *argument)
+/* USER CODE END Header_can_send_task_fun */
+__weak void can_send_task_fun(void *argument)
 {
-  /* USER CODE BEGIN gimble_task_fun */
+  /* USER CODE BEGIN can_send_task_fun */
   /* Infinite loop */
-  for (;;) {
+  for(;;)
+  {
     osDelay(1);
   }
-  /* USER CODE END gimble_task_fun */
-}
-
-/* USER CODE BEGIN Header_classic_task_fun */
-/**
-* @brief Function implementing the classicTaskFun thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_classic_task_fun */
-__weak void classic_task_fun(void *argument)
-{
-  /* USER CODE BEGIN classic_task_fun */
-  /* Infinite loop */
-  for (;;) {
-    osDelay(1);
-  }
-  /* USER CODE END classic_task_fun */
+  /* USER CODE END can_send_task_fun */
 }
 
 /**
