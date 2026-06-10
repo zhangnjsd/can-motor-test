@@ -34,7 +34,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
     if (hcan == &hcan1) {
         // Read remote can id
-        if (rx_header.StdId == LOCAL_CAN_ID) {
+        if (rx_header.StdId == REMOTE_CAN_ID) {
             CAN_TxHeaderTypeDef tx_header;
 
             // ? Echo back the message.
