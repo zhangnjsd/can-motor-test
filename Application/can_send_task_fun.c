@@ -5,10 +5,11 @@
 
 void can_send_task_fun(void *argument) {
     can_filter_init();
+    
+    uint8_t msg[4] = {1, 0, 0, 0};
     for (;;) {
         CAN_TxHeaderTypeDef tx_header;
 
-        uint8_t msg[4] = {1, 0, 0, 0};
         uint32_t mailbox;
 
         tx_header.StdId = REMOTE_CAN_ID;
