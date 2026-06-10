@@ -34,7 +34,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 
     if (hcan == &hcan1) {
         // Read remote can id
-        if (rx_header.StdId == REMOTE_CAN_ID) {
+        if (rx_header.StdId == LOCAL_CAN_ID) {
             // ? Process received data (if needed)
             recv_data1 = rx_data[0];
             //HAL_UART_Transmit(&huart1, (uint8_t *)"\nRecv data: ", 13, 500);
