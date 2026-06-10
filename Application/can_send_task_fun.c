@@ -18,6 +18,7 @@ void can_send_task_fun(void *argument) {
         HAL_CAN_AddTxMessage(&hcan1, &tx_header, msg, &mailbox);
 
         osDelay(1000);
+        msg[0]++;
     }
 }
 
