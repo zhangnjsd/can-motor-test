@@ -42,7 +42,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern CAN_HandleTypeDef hcan1;
-extern CAN_HandleTypeDef hcan2;
+extern UART_HandleTypeDef huart1;
 extern uint8_t recv_data1;
 /* USER CODE END EC */
 
