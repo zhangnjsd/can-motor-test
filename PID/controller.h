@@ -21,7 +21,6 @@
 #include "stdlib.h"
 #include "bsp_dwt.h"
 #include "user_lib.h"
-#include "arm_math.h"
 #include <math.h>
 
 #ifndef abs
