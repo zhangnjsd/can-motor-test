@@ -47,11 +47,10 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_can.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Mybsp/bsp_dwt.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application/gimble_task_fun.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Application/recv_task_fun.c
     ${CMAKE_CURRENT_SOURCE_DIR}/PID/controller.c
     ${CMAKE_CURRENT_SOURCE_DIR}/PID/user_lib.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/Application/rad_task_fun.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/Application/resolve_task_fun.c
 )
 
 # Add include paths

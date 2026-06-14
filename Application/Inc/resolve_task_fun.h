@@ -1,5 +1,5 @@
-#ifndef RAD_TASK_FUN_H
-#define RAD_TASK_FUN_H
+#ifndef RESOLVE_TASK_FUN_H
+#define RESOLVE_TASK_FUN_H
 
 #include "main.h"
 #include "bsp_can.h"

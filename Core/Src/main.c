@@ -49,7 +49,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
-CAN_HandleTypeDef hcan2;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart6;
@@ -61,24 +60,17 @@ const osThreadAttr_t defaultTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
-/* Definitions for gimbleTaskFun */
-osThreadId_t gimbleTaskFunHandle;
-const osThreadAttr_t gimbleTaskFun_attributes = {
-  .name = "gimbleTaskFun",
+/* Definitions for recv_task */
+osThreadId_t recv_taskHandle;
+const osThreadAttr_t recv_task_attributes = {
+  .name = "recv_task",
   .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
+  .priority = (osPriority_t) osPriorityHigh,
 };
-/* Definitions for recvTaskFun */
-osThreadId_t recvTaskFunHandle;
-const osThreadAttr_t recvTaskFun_attributes = {
-  .name = "recvTaskFun",
-  .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityNormal,
-};
-/* Definitions for radTaskFun */
-osThreadId_t radTaskFunHandle;
-const osThreadAttr_t radTaskFun_attributes = {
-  .name = "radTaskFun",
+/* Definitions for resolve_task */
+osThreadId_t resolve_taskHandle;
+const osThreadAttr_t resolve_task_attributes = {
+  .name = "resolve_task",
   .stack_size = 512 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
@@ -98,13 +90,11 @@ int16_t volt[4] = {0};
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_CAN1_Init(void);
-static void MX_CAN2_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_USART6_UART_Init(void);
 void StartDefaultTask(void *argument);
-void gimble_task_fun(void *argument);
 void recv_task_fun(void *argument);
-void rad_task_fun(void *argument);
+void resolve_task_fun(void *argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -145,7 +135,6 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_CAN1_Init();
-  MX_CAN2_Init();
   MX_USART1_UART_Init();
   MX_USART6_UART_Init();
   /* USER CODE BEGIN 2 */
@@ -176,14 +165,11 @@ int main(void)
   /* creation of defaultTask */
   defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
 
-  /* creation of gimbleTaskFun */
-  gimbleTaskFunHandle = osThreadNew(gimble_task_fun, NULL, &gimbleTaskFun_attributes);
+  /* creation of recv_task */
+  recv_taskHandle = osThreadNew(recv_task_fun, NULL, &recv_task_attributes);
 
-  /* creation of recvTaskFun */
-  recvTaskFunHandle = osThreadNew(recv_task_fun, NULL, &recvTaskFun_attributes);
-
-  /* creation of radTaskFun */
-  radTaskFunHandle = osThreadNew(rad_task_fun, NULL, &radTaskFun_attributes);
+  /* creation of resolve_task */
+  resolve_taskHandle = osThreadNew(resolve_task_fun, NULL, &resolve_task_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -293,43 +279,6 @@ static void MX_CAN1_Init(void)
 }
 
 /**
-  * @brief CAN2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_CAN2_Init(void)
-{
-
-  /* USER CODE BEGIN CAN2_Init 0 */
-
-  /* USER CODE END CAN2_Init 0 */
-
-  /* USER CODE BEGIN CAN2_Init 1 */
-
-  /* USER CODE END CAN2_Init 1 */
-  hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 3;
-  hcan2.Init.Mode = CAN_MODE_NORMAL;
-  hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan2.Init.TimeSeg1 = CAN_BS1_10TQ;
-  hcan2.Init.TimeSeg2 = CAN_BS2_3TQ;
-  hcan2.Init.TimeTriggeredMode = DISABLE;
-  hcan2.Init.AutoBusOff = ENABLE;
-  hcan2.Init.AutoWakeUp = ENABLE;
-  hcan2.Init.AutoRetransmission = ENABLE;
-  hcan2.Init.ReceiveFifoLocked = DISABLE;
-  hcan2.Init.TransmitFifoPriority = DISABLE;
-  if (HAL_CAN_Init(&hcan2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN CAN2_Init 2 */
-
-  /* USER CODE END CAN2_Init 2 */
-
-}
-
-/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -407,9 +356,9 @@ static void MX_GPIO_Init(void)
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
 
@@ -440,23 +389,6 @@ void StartDefaultTask(void *argument)
   /* USER CODE END 5 */
 }
 
-/* USER CODE BEGIN Header_gimble_task_fun */
-/**
-* @brief Function implementing the gimbleTaskFun thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_gimble_task_fun */
-__weak void gimble_task_fun(void *argument)
-{
-  /* USER CODE BEGIN gimble_task_fun */
-  /* Infinite loop */
-  for (;;) {
-    osDelay(1);
-  }
-  /* USER CODE END gimble_task_fun */
-}
-
 /* USER CODE BEGIN Header_recv_task_fun */
 /**
 * @brief Function implementing the recvTaskFun thread.
@@ -475,22 +407,22 @@ __weak void recv_task_fun(void *argument)
   /* USER CODE END recv_task_fun */
 }
 
-/* USER CODE BEGIN Header_rad_task_fun */
+/* USER CODE BEGIN Header_resolve_task_fun */
 /**
-* @brief Function implementing the radTaskFun thread.
+* @brief Function implementing the resolve_task thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_rad_task_fun */
-__weak void rad_task_fun(void *argument)
+/* USER CODE END Header_resolve_task_fun */
+__weak void resolve_task_fun(void *argument)
 {
-  /* USER CODE BEGIN rad_task_fun */
+  /* USER CODE BEGIN resolve_task_fun */
   /* Infinite loop */
   for(;;)
   {
     osDelay(1);
   }
-  /* USER CODE END rad_task_fun */
+  /* USER CODE END resolve_task_fun */
 }
 
 /**

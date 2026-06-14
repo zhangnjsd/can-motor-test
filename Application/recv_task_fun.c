@@ -18,11 +18,12 @@ void recv_task_fun(void *argument) {
     uint32_t next_wake_tick = osKernelGetTickCount();
 
     for (;;) {
+        // * Get data from CAN.
         current_angle = ((uint16_t)rx_data[0] << 8) | rx_data[1];
         current_speed = ((uint16_t)rx_data[2] << 8) | rx_data[3];
         current_torque = ((uint16_t)rx_data[4] << 8) | rx_data[5];
         
-        // Set and send controller.
+        // * Set and send controller.
         volt[1] = 0;
         volt[2] = 0;
         volt[3] = 0;
