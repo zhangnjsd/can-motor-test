@@ -1,10 +1,10 @@
 #include "recv_task_fun.h"
 #include <math.h>
 
-// Rewrite fputc to use UART for printf
+// Rewrite fputc to use UART6 for printf
 int __io_putchar(int ch) {
     uint8_t temp = (uint8_t)ch;
-    HAL_UART_Transmit(&huart1, &temp, 1, HAL_MAX_DELAY);
+    HAL_UART_Transmit(&huart6, &temp, 1, HAL_MAX_DELAY);
     return ch;
 }
 int fputc(int ch, FILE *f) {

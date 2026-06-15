@@ -65,7 +65,7 @@ osThreadId_t recv_taskHandle;
 const osThreadAttr_t recv_task_attributes = {
   .name = "recv_task",
   .stack_size = 512 * 4,
-  .priority = (osPriority_t) osPriorityHigh,
+  .priority = (osPriority_t) osPriorityNormal,
 };
 /* Definitions for resolve_task */
 osThreadId_t resolve_taskHandle;
