@@ -20,7 +20,7 @@ void recv_task_fun(void *argument) {
     for (;;) {
         // * Get data from CAN.
         current_angle = ((uint16_t)rx_data[0] << 8) | rx_data[1];
-        current_speed = ((uint16_t)rx_data[2] << 8) | rx_data[3];
+        current_speed = (int16_t)(((uint16_t)rx_data[2] << 8) | rx_data[3]);
         current_torque = ((uint16_t)rx_data[4] << 8) | rx_data[5];
         
         // * Set and send controller.
@@ -33,8 +33,9 @@ void recv_task_fun(void *argument) {
         if (++print_div >= 10) {
             print_div = 0;
             // Bias.
-            printf("stream:%f,0\n",
-                (float_t)current_angle - (float_t)target_angle_dbg);
+            printf("stream:%f,0,%f,%f\n",
+                (float_t)current_angle - (float_t)target_angle_dbg, 
+                (float_t)current_speed * 15, (float_t)target_speed_dbg);
         }
 
         

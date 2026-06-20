@@ -77,7 +77,7 @@ const osThreadAttr_t resolve_task_attributes = {
 /* USER CODE BEGIN PV */
 // RX_DATA { MECH_ANGLE_H, MECH_ANGLE_L, SPD_H, SPD_L, TORQUE_H, TORQUE_L, TEMP, FLAG }
 uint8_t rx_data[8];
-uint16_t current_speed = 0;
+int16_t current_speed = 0;
 uint16_t current_angle = 0;
 uint16_t current_torque = 0;
 float target_angle_dbg = 0.0f;
