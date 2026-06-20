@@ -1,6 +1,5 @@
 #ifndef BSP_CAN_H
 #define BSP_CAN_H
-#include "main.h"
 
 void CAN_Send(CAN_HandleTypeDef *hcan, int16_t *voltage,uint32_t StdId);
 

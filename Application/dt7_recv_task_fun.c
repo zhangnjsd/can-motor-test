@@ -1,6 +1,7 @@
 #include "dt7_recv_task_fun.h"
 #include "main.h"
 #include "bsp_dt7.h"
+#include "bsp_can.h"
 #include "cmsis_os.h"
 
 dt7_data_t dt7_data;
@@ -8,6 +9,7 @@ dt7_data_t dt7_data;
 void dt7_recv_task_fun(void const * argument)
 {
 	dbus_uart_init();
+	can_filter_init();
 	for(;;)
 	{ 
 		dt7_data.channel0 = (int16_t)(((dbus_buf[0] | (dbus_buf[1] << 8)) & 0x07FF) - 1024);

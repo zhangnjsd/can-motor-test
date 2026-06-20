@@ -15,7 +15,6 @@
 #define BMI088DRIVER_H
 
 #include "stdint.h"
-#include "main.h"
 
 #define BMI088_TEMP_FACTOR 0.125f
 #define BMI088_TEMP_OFFSET 23.0f
@@ -44,7 +43,7 @@
 #define BMI088_GYRO_250_SEN 0.00013315805450396191230191732547673f
 #define BMI088_GYRO_125_SEN 0.000066579027251980956150958662738366f
 
-// ÐèÊÖ¶¯ÐÞ¸Ä
+// ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½Þ¸ï¿½
 #if INFANTRY_ID == 0
 #define GxOFFSET 0.00247530174f
 #define GyOFFSET 0.000393082853f
