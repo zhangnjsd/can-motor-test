@@ -20,11 +20,11 @@ void resolve_task_fun(void *argument) {
     PID_Improve_Init(
         &pid_speed, 
         25000.0f,
-        12000.0f,
+        10000.0f,
         0.80f,
 
-        50.0f,
-        1.20f,
+        34.5f,
+        1.07f,
         0.0f,
 
         120.0f,
@@ -44,8 +44,8 @@ void resolve_task_fun(void *argument) {
         60.0f,
         0.30f,
 
-        1.00f,
-        0.00f,
+        2.10f,
+        0.01f,
         0.00f,
 
         120.0f,

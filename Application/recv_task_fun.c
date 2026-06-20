@@ -35,7 +35,7 @@ void recv_task_fun(void *argument) {
             // Bias.
             printf("stream:%f,0,%f,%f\n",
                 (float_t)current_angle - (float_t)target_angle_dbg, 
-                (float_t)current_speed * 15, (float_t)target_speed_dbg);
+                (float_t)current_speed * 8, (float_t)target_speed_dbg);
         }
 
         
