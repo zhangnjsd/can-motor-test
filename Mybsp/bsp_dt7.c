@@ -51,7 +51,7 @@ void dbus_uart_init(void)//DBUS串口初始化
 	//清除这个标志是为了确保后续的接收操作能够正确检测到新的空闲状态
 	__HAL_UART_ENABLE_IT(&DBUS_HUART, UART_IT_IDLE);//使能UART的空闲中断，当UART处于空闲状态并且接收缓冲区没有数据时，会触发这个中断
 	//使能这个中断后，可以在中断服务例程中处理空闲状态
-	uart_receive_dma_no_it(&DBUS_HUART, dbus_buf, DBUS_MAX_LEN);//调用之前的函数，用DMA来接收串口数据
+	uart_receive_dma_no_it(&DBUS_HUART, dbus_buf, DBUS_BUFLEN);//调用之前的函数，用DMA来接收串口数据
 }
 
 void rc_callback_handler(rc_info_t *rc, uint8_t *buff)
@@ -94,11 +94,11 @@ static void uart_rx_idle_callback(UART_HandleTypeDef* huart)
 	{
 		__HAL_DMA_DISABLE(huart->hdmarx);//失能DMA接收，防止下一次接收的数据在上一次数据的尾部，而不是全新的数据
  
-		if ((DBUS_MAX_LEN - dma_current_data_counter(huart->hdmarx->Instance)) == DBUS_BUFLEN)
+		if ((DBUS_BUFLEN - dma_current_data_counter(huart->hdmarx->Instance)) == DBUS_BUFLEN)
 		{//计算当前接收的数据长度，如果接收到的数据长度等于18字节，则调用处理数据函数
 			rc_callback_handler(&rc, dbus_buf);	//处理接收的数据并解码
 		}
-		__HAL_DMA_SET_COUNTER(huart->hdmarx, DBUS_MAX_LEN);//设置DMA接收预定义的缓冲区的长度，以便为下一次接收做好准备
+		__HAL_DMA_SET_COUNTER(huart->hdmarx, DBUS_BUFLEN);//设置DMA接收预定义的缓冲区的长度，以便为下一次接收做好准备
 		__HAL_DMA_ENABLE(huart->hdmarx);//重新启用DMA接收，以便继续接收数据
 	}
 }

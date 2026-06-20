@@ -26,6 +26,7 @@ struct dt7_data_t {
 
 extern struct dt7_data_t dt7_data;
 
+
 void recv_task_fun(void *argument);
 
 #endif /* __RECV_TASK_FUN_H */

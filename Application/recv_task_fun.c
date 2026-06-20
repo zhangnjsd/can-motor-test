@@ -55,8 +55,8 @@ void recv_task_fun(void *argument) {
         if (++print_div >= 10) {
             print_div = 0;
             // Bias.
-            printf("stream:%f,0,%f,%f\n",
-                (float_t)current_angle - (float_t)target_angle_dbg, 
+            printf("stream:%f,%f,%f,%f\n",
+                (float_t)current_angle, (float_t)target_angle_dbg, 
                 (float_t)current_speed * 8, (float_t)target_speed_dbg);
         }
 

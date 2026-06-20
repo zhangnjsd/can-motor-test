@@ -1,8 +1,34 @@
 #include "resolve_task_fun.h"
 #include "controller.h"
 #include "main.h"
+#include "recv_task_fun.h"
 
 #define PRE_TIME_MS 1
+#define DT7_CHANNEL_MAX 660.0f
+#define ECD_ROUND 8191.0f
+#define ECD_HALF_ROUND (ECD_ROUND / 2.0f)
+
+static float ecd_format(float angle)
+{
+    while (angle < 0.0f) {
+        angle += ECD_ROUND;
+    }
+    while (angle >= ECD_ROUND) {
+        angle -= ECD_ROUND;
+    }
+    return angle;
+}
+
+static float ecd_shortest_error(float measure, float ref)
+{
+    float err = ref - measure;
+    if (err > ECD_ROUND / 2.0f) {
+        err -= ECD_ROUND;
+    } else if (err < -ECD_ROUND / 2.0f) {
+        err += ECD_ROUND;
+    }
+    return err;
+}
 
 void resolve_task_fun(void *argument) {
     
@@ -10,11 +36,13 @@ void resolve_task_fun(void *argument) {
     PID_t pid_speed = {0};
 
     float target_angle_ecd;
+    float start_angle_ecd;
     uint8_t target_locked = 0;
     
     // ! Prevert boost!
     while (current_angle == 0) {}
-    target_angle_ecd = (float)current_angle;
+    start_angle_ecd = (float)current_angle;
+    target_angle_ecd = start_angle_ecd;
 
     // ? Speed args
     PID_Improve_Init(
@@ -23,8 +51,8 @@ void resolve_task_fun(void *argument) {
         10000.0f,
         0.80f,
 
-        34.5f,
-        1.07f,
+        32.0f,
+        0.85f,
         0.0f,
 
         120.0f,
@@ -44,7 +72,7 @@ void resolve_task_fun(void *argument) {
         60.0f,
         0.30f,
 
-        2.10f,
+        1.20f,
         0.01f,
         0.00f,
 
@@ -59,10 +87,15 @@ void resolve_task_fun(void *argument) {
 
     uint32_t next_wake_tick = osKernelGetTickCount();
     for (;;) {
+        float channel0 = float_constrain((float)dt7_data.channel0, -DT7_CHANNEL_MAX, DT7_CHANNEL_MAX);
+        float target_offset_ecd = channel0 / DT7_CHANNEL_MAX * ECD_HALF_ROUND;
+        target_angle_ecd = ecd_format(start_angle_ecd + target_offset_ecd);
+
         // * Angle loop (outer loop — MUST run first in cascade)
         //   Angle PID output = speed reference for the inner speed loop
         float angle_measure = (float)current_angle;
-        float speed_ref = PID_Calculate(&pid_angle, angle_measure, target_angle_ecd);
+        float angle_err = ecd_shortest_error(angle_measure, target_angle_ecd);
+        float speed_ref = PID_Calculate(&pid_angle, angle_measure, angle_measure + angle_err);
         target_angle_speed_ref = speed_ref;
         target_angle_dbg = target_angle_ecd;
 
