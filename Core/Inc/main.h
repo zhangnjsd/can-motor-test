@@ -44,6 +44,7 @@ extern "C" {
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 extern uint8_t rx_data[8];
 extern int16_t current_speed;

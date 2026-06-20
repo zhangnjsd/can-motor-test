@@ -33,6 +33,7 @@ typedef __packed struct
 		0,            \
 		0,            \
 }
+extern uint8_t dbus_buf[DBUS_BUFLEN];
 void uart_receive_handler(UART_HandleTypeDef *huart);
 static void uart_rx_idle_callback(UART_HandleTypeDef* huart);
 void rc_callback_handler(rc_info_t *rc, uint8_t *buff);
